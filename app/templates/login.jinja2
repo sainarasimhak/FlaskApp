@@ -19,9 +19,9 @@
     <form method="POST" action="/login">
       {{ form.csrf_token }}
 
-      <fieldset class="email">
+      <fieldset class="form-field">
         {{ form.email.label }}
-        {{ form.email}}
+        {{ form.email }}
         {% if form.email.errors %}
           <ul class="errors">
             {% for error in form.email.errors %}
@@ -30,7 +30,7 @@
         {% endif %}
       </fieldset>
 
-      <fieldset class="password">
+      <fieldset class="form-field">
         {{ form.password.label }}
         {{ form.password }}
         {% if form.email.errors %}
@@ -45,6 +45,9 @@
         {{ form.submit }}
       </div>
 
+      <div class="login-signup">
+        <span>Don't have an account? <a href="/signup">Sign up.</a></span>
+      </div>
 
     </form>
   </div>
