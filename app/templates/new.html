@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="/person/new" method="POST">
+    <div class="row">
+        <div class="col">
+            <label for="first_name">First Name</label>
+            <input id="first_name" type="text" class="form-control" placeholder="First Name" name="first_name">
+        </div>
+        <div class="col">
+            <label for="last_name">Last Name</label>
+            <input id="last_name" type="text" class="form-control" placeholder="Last Name" name="last_name">
+        </div>
+        <div class="col">
+            <label for="company_name">Company Name</label>
+            <input id="company_name" type="text" class="form-control" placeholder="Company Name" name="company_name">
+        </div>
+        <div class="col">
+            <label for="address">Player Name</label>
+            <input id="address" type="text" class="form-control" placeholder="Address" name="address">
+        </div>
+        <div class="col">
+            <label for="phone">Player Name</label>
+            <input id="phone" type="text" class="form-control" placeholder="Phone No" name="phone">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success">Success</button>
+
+</form>
+
+{% endblock %}
+

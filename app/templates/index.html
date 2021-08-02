@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">first_name</th>
+        <th scope="col">last_name</th>
+        <th scope="col">company_name</th>
+        <th scope="col">address</th>
+        <th scope="col">phone</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for person in persons %}
+    <tr>
+        <td>{{ person.id }}</td>
+        <td><a href="view/{{person.id}}">{{ person.first_name }}</a></td>
+        <td>{{ person.last_name }}</td>
+        <td>{{ person.company_name }}</td>
+        <td>{{ person.address }}</td>
+        <td>{{ person.phone }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
