@@ -6,12 +6,15 @@ from pymysql.cursors import DictCursor
 from forms import SignupForm
 from forms import LoginForm
 from flask_login import login_required, logout_user
+from flask_session import Session
 
 app = Flask(__name__)
 
 mysql = MySQL(cursorclass=DictCursor)
 
 app.config.from_object('config.Config')
+
+sess = Session()
 
 app.config['MYSQL_DATABASE_HOST'] = 'db'
 app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -20,14 +23,8 @@ app.config['MYSQL_DATABASE_PORT'] = 3306
 app.config['MYSQL_DATABASE_DB'] = 'namedb'
 mysql.init_app(app)
 
+sess.init_app(app)
 
-@app.route('/', methods=['GET'])
-def index():
-    user = {'username': 'SaiK'}
-    cursor = mysql.get_db().cursor()
-    cursor.execute('SELECT * FROM details')
-    result = cursor.fetchall()
-    return render_template('index.html', title='Home', user=user, persons=result)
 
 
 @app.route('/view/<int:person_id>', methods=['GET'])
@@ -141,6 +138,17 @@ def api_delete(person_id) -> str:
     resp = Response(status=200, mimetype='application/json')
     return resp
 
+@main_bp.route('/', methods=['GET'])
+@login_required
+def dashboard():
+    """Logged-in User Dashboard."""
+    return render_template(
+        'dashboard.jinja2',
+        title='Flask-Login Tutorial.',
+        template='dashboard-template',
+        current_user=current_user,
+        body="You are now logged in!"
+    )
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup_page():
@@ -169,7 +177,19 @@ def login_page():
 def logout():
     """User log-out logic."""
     logout_user()
-    return redirect(url_for('auth_bp.login'))
+    return redirect(url_for('login.jinja2'))
+
+
+@app.route("/session", methods=["GET"])
+@login_required
+def session_view():
+    """Display session variable value."""
+    return render_template(
+        "session.jinja2",
+        title="Flask-Session Tutorial.",
+        template="dashboard-template",
+        session_variable=str(session["redis_test"]),
+    )
 
 
 @app.errorhandler(404)

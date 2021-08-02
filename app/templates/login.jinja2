@@ -21,7 +21,7 @@
 
       <fieldset class="email">
         {{ form.email.label }}
-        {{ form.email(placeholder='youremail@example.com') }}
+        {{ form.email}}
         {% if form.email.errors %}
           <ul class="errors">
             {% for error in form.email.errors %}
@@ -45,9 +45,6 @@
         {{ form.submit }}
       </div>
 
-      <div class="login-signup">
-        <span>Don't have an account? <a href="{{ url_for('signup.jinja2') }}">Sign up.</a></span>
-      </div>
 
     </form>
   </div>
