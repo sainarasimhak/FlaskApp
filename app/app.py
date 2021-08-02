@@ -4,13 +4,22 @@ from flask import Flask, request, Response, redirect
 from flask import render_template
 from flaskext.mysql import MySQL
 from pymysql.cursors import DictCursor
-from forms import SignupForm
+from forms import LoginForm
+from flask_login import current_user, login_required, logout_user, LoginManager
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
 mysql = MySQL(cursorclass=DictCursor)
 
 app.config.from_object('config.Config')
+
+app.config['MYSQL_DATABASE_HOST'] = 'db'
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
+app.config['MYSQL_DATABASE_PORT'] = 3306
+app.config['MYSQL_DATABASE_DB'] = 'namedb'
+mysql.init_app(app)
 
 
 @app.route('/', methods=['GET'])
@@ -136,23 +145,44 @@ def api_delete(person_id) -> str:
 @app.route('/signup', methods=['GET', 'POST'])
 def signup_page():
     return render_template(
-        '/signup.html',
-        title='Create an Account',
+        '/signup.jinja2',
+        title='Create an Account.',
         form=SignupForm(),
         template='signup-page',
         body="Sign up for a user account."
     )
 
 
-@app.route("/signin")
+@app.route('/login', methods=['GET', 'POST'])
+def login_page():
+    return render_template(
+        '/login.html',
+        title='Create an Account.',
+        form=LoginForm,
+        template='login-page',
+        body="Log in to your account."
+    )
+
+
+@app.route('/', methods=['GET'])
+@login_required
 def dashboard():
-    # This had to serve a static page b/c of how tutorial made the route
-    return redirect('/dashboard.html')
+    """Logged-in User Dashboard."""
+    return render_template(
+        'dashboard.jinja2',
+        title='Flask-Login Tutorial.',
+        template='dashboard-template',
+        current_user=current_user,
+        body="You are now logged in!"
+    )
 
 
-@app.route("/login")
-def login():
-    return redirect(url_for('dashboard'))
+@app.route("/logout")
+@login_required
+def logout():
+    """User log-out logic."""
+    logout_user()
+    return redirect(url_for('login.html'))
 
 
 @app.errorhandler(404)
