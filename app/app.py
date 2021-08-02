@@ -1,18 +1,15 @@
-from typing import List, Dict
 import simplejson as json
-from flask import Flask, request, Response, redirect, session
+from flask import Flask, request, Response, redirect, url_for, session
 from flask import render_template
 from flaskext.mysql import MySQL
 from pymysql.cursors import DictCursor
+from forms import SignupForm
 from forms import LoginForm
 from flask_login import login_required, logout_user
-from flask_session import Session
 
 app = Flask(__name__)
 
 mysql = MySQL(cursorclass=DictCursor)
-
-sess = Session()
 
 app.config.from_object('config.Config')
 
@@ -23,7 +20,6 @@ app.config['MYSQL_DATABASE_PORT'] = 3306
 app.config['MYSQL_DATABASE_DB'] = 'namedb'
 mysql.init_app(app)
 
-sess.init_app(app)
 
 @app.route('/', methods=['GET'])
 def index():
@@ -145,6 +141,7 @@ def api_delete(person_id) -> str:
     resp = Response(status=200, mimetype='application/json')
     return resp
 
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup_page():
     return render_template(
@@ -159,34 +156,11 @@ def signup_page():
 @app.route('/login', methods=['GET', 'POST'])
 def login_page():
     return render_template(
-        '/login.html',
+        '/login.jinja2',
         title='Create an Account.',
         form=LoginForm,
         template='login-page',
         body="Log in to your account."
-    )
-
-@app.route("/session", methods=["GET"])
-@login_required
-def session_view():
-    """Display session variable value."""
-    return render_template(
-        "session.jinja2",
-        title="Flask-Session Tutorial.",
-        template="dashboard-template",
-        session_variable=str(session["redis_test"]),
-    )
-
-@app.route('/', methods=['GET'])
-@login_required
-def dashboard():
-    """Logged-in User Dashboard."""
-    return render_template(
-        'dashboard.jinja2',
-        title='Flask-Login Tutorial.',
-        template='dashboard-template',
-        current_user=current_user,
-        body="You are now logged in!"
     )
 
 
@@ -195,7 +169,7 @@ def dashboard():
 def logout():
     """User log-out logic."""
     logout_user()
-    return redirect(url_for('login.html'))
+    return redirect(url_for('auth_bp.login'))
 
 
 @app.errorhandler(404)
@@ -214,6 +188,7 @@ def bad_request():
 def server_error(arg):
     """Internal server error."""
     return render_template('500.html', message='Server Error')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
