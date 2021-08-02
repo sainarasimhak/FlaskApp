@@ -16,11 +16,6 @@ app.config.from_object('config.Config')
 
 sess = Session()
 
-app.config['MYSQL_DATABASE_HOST'] = 'db'
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
-app.config['MYSQL_DATABASE_PORT'] = 3306
-app.config['MYSQL_DATABASE_DB'] = 'namedb'
 mysql.init_app(app)
 
 sess.init_app(app)
@@ -138,7 +133,7 @@ def api_delete(person_id) -> str:
     resp = Response(status=200, mimetype='application/json')
     return resp
 
-@main_bp.route('/', methods=['GET'])
+@app.route('/', methods=['GET'])
 @login_required
 def dashboard():
     """Logged-in User Dashboard."""
