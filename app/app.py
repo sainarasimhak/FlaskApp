@@ -4,10 +4,16 @@ from flask import Flask, request, Response, redirect
 from flask import render_template
 from flaskext.mysql import MySQL
 from pymysql.cursors import DictCursor
+from forms import SignupForm
 
-app = Flask(__name__)
+app = Flask(__name__,
+            template_folder="templates",
+            static_folder="static",
+            static_url_path='')
+
 mysql = MySQL(cursorclass=DictCursor)
 
+app.config.from_object('config.Config')
 app.config['MYSQL_DATABASE_HOST'] = 'db'
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
@@ -136,6 +142,44 @@ def api_delete(person_id) -> str:
     resp = Response(status=200, mimetype='application/json')
     return resp
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup_page():
+    return render_template(
+        '/signup.html',
+        title='Create an Account | Flask-Login Tutorial.',
+        form=SignupForm(),
+        template='signup-page',
+        body="Sign up for a user account."
+    )
+
+
+@app.route("/signin")
+def dashboard():
+    # This had to serve a static page b/c of how tutorial made the route
+    return redirect('/dashboard.html')
+
+
+@app.route("/login")
+def login():
+    return redirect(url_for('dashboard'))
+
+
+@app.errorhandler(404)
+def not_found(arg):
+    """Page not found."""
+    return render_template('404.html', title='404 error.', message='Page Not Found')
+
+
+@app.errorhandler(400)
+def bad_request():
+    """Bad request."""
+    return render_template('400.html', title='400 error.', message='Bad request.  Page Not Found')
+
+
+@app.errorhandler(500)
+def server_error(arg):
+    """Internal server error."""
+    return render_template('500.html', message='Server Error')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
