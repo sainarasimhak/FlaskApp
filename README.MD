@@ -13,3 +13,5 @@ These are instructions on how to run the project:
 4. Once the build is done, run the command "docker-compose up" to bring up the services.  Again, this should take about a minute.
 5. Open a browser, and go to localhost:5000.  This will open the project, and you will be able to view it.  Note that in order to edit, add or delete records, you will need to be logged in.  Create an account at the top of the page, and then log in. 
 6. When you are done, run "docker-compose down".  This will stop all the containers and remove the images.  Note that you may have to hit "Ctrl + C" on the keyboard in order to type anything on the command line.  Alternatively, you could open a new window or tab in the command line, or another CLI interface of your choice.  Personally, I use Windows Terminal, but there is also Terminal if you are using a Mac, or Windows PowerShell if you are on Windows.
+
+Note - I have add all the steps followed with the respective commit message since i havent created a branch for every individual step
