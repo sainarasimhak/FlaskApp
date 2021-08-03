@@ -8,6 +8,7 @@ from forms import LoginForm
 from flask_login import login_required, logout_user
 from flask_session import Session
 
+
 app = Flask(__name__)
 
 mysql = MySQL(cursorclass=DictCursor)
@@ -145,7 +146,7 @@ def api_delete(person_id) -> str:
 @app.route('/signup', methods=['GET', 'POST'])
 def signup_page():
     return render_template(
-        '/signup.jinja2',
+        'signup.jinja2',
         title='Create an Account.',
         form=SignupForm(),
         template='signup-page',
@@ -164,24 +165,24 @@ def login_page():
     )
 
 
-@app.route("/logout")
-@login_required
-def logout():
-    """User log-out logic."""
-    logout_user()
-    return redirect(url_for('login.jinja2'))
-
-
 @app.route("/session", methods=["GET"])
 @login_required
 def session_view():
     """Display session variable value."""
     return render_template(
         "session.jinja2",
-        title="Flask-Session Tutorial.",
+        title="People Details",
         template="dashboard-template",
         session_variable=str(session["redis_test"]),
     )
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    """User log-out logic."""
+    logout_user()
+    return render_template('login.jinja2')
 
 
 @app.errorhandler(404)
@@ -203,4 +204,4 @@ def server_error(arg):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
