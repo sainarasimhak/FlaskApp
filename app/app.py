@@ -20,8 +20,6 @@ mysql.init_app(app)
 
 sess.init_app(app)
 
-
-
 @app.route('/view/<int:person_id>', methods=['GET'])
 def record_view(person_id):
     cursor = mysql.get_db().cursor()
@@ -31,7 +29,9 @@ def record_view(person_id):
 
 
 @app.route('/edit/<int:person_id>', methods=['GET'])
+@login_required
 def form_edit_get(person_id):
+    session["redis_test"] = "This is a session variable."
     cursor = mysql.get_db().cursor()
     cursor.execute('SELECT * FROM details WHERE id=%s', person_id)
     result = cursor.fetchall()
@@ -39,7 +39,9 @@ def form_edit_get(person_id):
 
 
 @app.route('/edit/<int:person_id>', methods=['POST'])
+@login_required
 def form_update_post(person_id):
+    session["redis_test"] = "This is a session variable."
     cursor = mysql.get_db().cursor()
     inputData = (request.form.get('first_name'), request.form.get('last_name'), request.form.get('company_name'),
                  request.form.get('address'), request.form.get('phone'), person_id)
@@ -51,12 +53,16 @@ def form_update_post(person_id):
 
 
 @app.route('/person/new', methods=['GET'])
+@login_required
 def form_insert_get():
+    session["redis_test"] = "This is a session variable."
     return render_template('new.html', title='New Person Form')
 
 
 @app.route('/person/new', methods=['POST'])
+
 def form_insert_post():
+    session["redis_test"] = "This is a session variable."
     cursor = mysql.get_db().cursor()
     inputData = (request.form.get('first_name'), request.form.get('last_name'), request.form.get('company_name'),
                  request.form.get('address'), request.form.get('phone'))
@@ -68,7 +74,9 @@ def form_insert_post():
 
 
 @app.route('/delete/<int:person_id>', methods=['POST'])
+@login_required
 def form_delete_post(person_id):
+    session["redis_test"] = "This is a session variable."
     cursor = mysql.get_db().cursor()
     sql_delete_query = """DELETE FROM details WHERE id = %s """
     cursor.execute(sql_delete_query, person_id)
@@ -133,17 +141,6 @@ def api_delete(person_id) -> str:
     resp = Response(status=200, mimetype='application/json')
     return resp
 
-@app.route('/', methods=['GET'])
-@login_required
-def dashboard():
-    """Logged-in User Dashboard."""
-    return render_template(
-        'dashboard.jinja2',
-        title='Flask-Login Tutorial.',
-        template='dashboard-template',
-        current_user=current_user,
-        body="You are now logged in!"
-    )
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup_page():
